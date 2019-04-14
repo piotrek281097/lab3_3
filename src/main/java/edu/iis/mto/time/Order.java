@@ -1,5 +1,6 @@
 package edu.iis.mto.time;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Order {
 	private static final int VALID_PERIOD_HOURS = 24;
 	private State orderState;
 	private List<OrderItem> items = new ArrayList<OrderItem>();
-	private DateTime subbmitionDate;
+	private FakeDateTime subbmitionDate, fakeDateTime;
 
 	public Order() {
 		orderState = State.CREATED;
@@ -26,15 +27,12 @@ public class Order {
 
 	public void submit() {
 		requireState(State.CREATED);
-
 		orderState = State.SUBMITTED;
-		subbmitionDate = new DateTime();
-
 	}
 
 	public void confirm() {
 		requireState(State.SUBMITTED);
-		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, new DateTime()).getHours();
+		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate.getFakeDateTime(),fakeDateTime.getFakeDateTime()).getHours();
 		if(hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS){
 			orderState = State.CANCELLED;
 			throw new OrderExpiredException();
@@ -60,6 +58,14 @@ public class Order {
 				+ allowedStates + " to perform required  operation, but is in "
 				+ orderState);
 
+	}
+
+	public void setFakeDateTime(FakeDateTime fakeDateTime) {
+		this.fakeDateTime = fakeDateTime;
+	}
+
+	public void setSubbmitionFakeDateTime(FakeDateTime fakeDateTime) {
+		subbmitionDate = fakeDateTime;
 	}
 
 	public static enum State {
