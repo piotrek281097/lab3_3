@@ -1,17 +1,15 @@
 package edu.iis.mto.time;
 
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
 public class Order {
 	private static final int VALID_PERIOD_HOURS = 24;
 	private State orderState;
 	private List<OrderItem> items = new ArrayList<OrderItem>();
-	private FakeDateTime subbmitionDate, fakeDateTime;
+	private MyDateTime submissionDate, futureDateTime;
 
 	public Order() {
 		orderState = State.CREATED;
@@ -32,7 +30,7 @@ public class Order {
 
 	public void confirm() {
 		requireState(State.SUBMITTED);
-		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate.getFakeDateTime(),fakeDateTime.getFakeDateTime()).getHours();
+		int hoursElapsedAfterSubmittion = Hours.hoursBetween(submissionDate.getMyDateTime(), futureDateTime.getMyDateTime()).getHours();
 		if(hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS){
 			orderState = State.CANCELLED;
 			throw new OrderExpiredException();
@@ -60,12 +58,12 @@ public class Order {
 
 	}
 
-	public void setFakeDateTime(FakeDateTime fakeDateTime) {
-		this.fakeDateTime = fakeDateTime;
+	public void setMyDateTime(MyDateTime myDateTime) {
+		this.futureDateTime = myDateTime;
 	}
 
-	public void setSubbmitionFakeDateTime(FakeDateTime fakeDateTime) {
-		subbmitionDate = fakeDateTime;
+	public void setSubbmitionMyDateTime(MyDateTime myDateTime) {
+		submissionDate = myDateTime;
 	}
 
 	public static enum State {

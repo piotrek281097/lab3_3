@@ -9,9 +9,9 @@ public class OrderTest {
     public void testShouldThrowOrderExpiredException() {
 
         Order order = new Order();
-        order.setSubbmitionFakeDateTime(new FakeDateTime(2019, 2, 1, 1, 1));
+        order.setSubbmitionMyDateTime(new MyDateTime(2019, 2, 1, 1, 1));
         order.submit();
-        order.setFakeDateTime(new FakeDateTime(2019, 4, 1, 1, 1));
+        order.setMyDateTime(new MyDateTime(2019, 4, 1, 1, 1));
         order.confirm();
     }
 }
