@@ -15,4 +15,12 @@ public class OrderTest {
         order.confirm();
     }
 
+    @Test
+    public void testOrderConfirmed() {
+
+        Order order = new Order(new RealMyDateTime());
+        order.submit();
+        order.confirm();
+    }
+
 }
