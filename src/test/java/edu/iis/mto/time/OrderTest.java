@@ -2,16 +2,17 @@ package edu.iis.mto.time;
 
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class OrderTest {
 
     @Test (expected = OrderExpiredException.class)
     public void testShouldThrowOrderExpiredException() {
 
-        Order order = new Order();
-        order.setSubbmitionMyDateTime(new MyDateTime(2019, 2, 1, 1, 1));
+        Order order = new Order(new FalseMyDateTime());
         order.submit();
-        order.setMyDateTime(new MyDateTime(2019, 4, 1, 1, 1));
         order.confirm();
     }
+
 }

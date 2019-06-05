@@ -3,16 +3,19 @@ package edu.iis.mto.time;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
 public class Order {
 	private static final int VALID_PERIOD_HOURS = 24;
 	private State orderState;
 	private List<OrderItem> items = new ArrayList<OrderItem>();
-	private MyDateTime submissionDate, futureDateTime;
+	private DateTime submissionDate;
+	private MyDateTimeInterface myDateTime;
 
-	public Order() {
+	public Order(MyDateTimeInterface myDateTime) {
 		orderState = State.CREATED;
+		this.myDateTime = myDateTime;
 	}
 
 	public void addItem(OrderItem item) {
@@ -26,11 +29,12 @@ public class Order {
 	public void submit() {
 		requireState(State.CREATED);
 		orderState = State.SUBMITTED;
+		submissionDate = myDateTime.getDateTime();
 	}
 
 	public void confirm() {
 		requireState(State.SUBMITTED);
-		int hoursElapsedAfterSubmittion = Hours.hoursBetween(submissionDate.getMyDateTime(), futureDateTime.getMyDateTime()).getHours();
+		int hoursElapsedAfterSubmittion = Hours.hoursBetween(submissionDate, new DateTime()).getHours();
 		if(hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS){
 			orderState = State.CANCELLED;
 			throw new OrderExpiredException();
@@ -56,14 +60,6 @@ public class Order {
 				+ allowedStates + " to perform required  operation, but is in "
 				+ orderState);
 
-	}
-
-	public void setMyDateTime(MyDateTime myDateTime) {
-		this.futureDateTime = myDateTime;
-	}
-
-	public void setSubbmitionMyDateTime(MyDateTime myDateTime) {
-		submissionDate = myDateTime;
 	}
 
 	public static enum State {
